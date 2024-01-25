@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 # importing required modules
+import os
+import sys
+import subprocess
+
+def install(package):
+    subprocess.call([sys.executable, "-m", "pip", "install", package])
 
 try:
-    import PyPDF2
+    import pdfplumber
 except ImportError:
-    import os
-    os.system('pip install PyPDF2')
-    import PyPDF2
+    install('pdfplumber')
+    import pdfplumber
 
 
-def extract_text_from_pdf(pdf_filename, txt_filename):
-    # creating a pdf reader object 
-    reader = PyPDF2.PdfReader(pdf_filename) 
-
-
-    # printing number of pages in pdf file 
-    print(f"Total pages in the PDF: {len(reader.pages)}") 
-
-
-    # extracting text from all pages and saving to txt file
-    with open(txt_filename, 'w', encoding='utf-8') as f:  # Open the file with UTF-8 encoding
-
-        for i, page in enumerate(reader.pages):
-            text = page.extract_text() 
-            f.write(text + '\n')
-            print(f"Total pages converted: {i+1}", end="\r")
+def extract_text_from_pdf_with_pdfplumber(pdf_filename, txt_filename):
+    with pdfplumber.open(pdf_filename) as pdf:
+        total_pages = len(pdf.pages)
+        print(f"Total pages in the PDF: {total_pages}")
+    
+        with open(txt_filename, 'w', encoding='utf-8') as f:
+            for i, page in enumerate(pdf.pages):
+                text = page.extract_text()
+                f.write(text + '\n')
+                print(f"Total pages converted: {i+1}", end="\r")
 
 
 if __name__ == "__main__":
@@ -37,9 +36,7 @@ if __name__ == "__main__":
         print("No txt file specified")
     else:
         # Migrating starts here....
-        extract_text_from_pdf(pdf_filename, txt_filename)
-
+        print("Extracting text with pdfplumber...")
+        extract_text_from_pdf_with_pdfplumber(pdf_filename, txt_filename)
 
     print("\nAll Done.")
-
-
