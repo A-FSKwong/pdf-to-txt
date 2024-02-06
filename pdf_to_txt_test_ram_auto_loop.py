@@ -38,7 +38,8 @@ def extract_text_from_pdf_with_pdfplumber(pdf_filename, txt_filename):
                         break
                     text = pdf.pages[i].extract_text()
                     f.write(text + '\n')
-                    print(f"Total pages converted: {i+1}", end="\r")
+                    sys.stdout.write(f"\rTotal pages converted: {i+1}")
+                    sys.stdout.flush()
                 else:
                     break
 
