@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# importing required modules
 import os
 import sys
 import subprocess
